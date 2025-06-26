@@ -187,7 +187,21 @@
         "label": "Title",
         "name": "title",
         "value": "",
-        "valueType": "string"
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Dark Theme",
+            "value": "dark-theme"
+          },
+          {
+            "name": "Centered",
+            "value": "centered"
+          },
+          {
+            "name": "Custom Border",
+            "value": "custom-border"
+          }
+        ]
       },
       {
         "component": "select",
@@ -195,10 +209,9 @@
         "value": "h1",
         "label": "Title Type",
         "valueType": "string",
-        "classes": "abc",
         "options": [
           {
-            "name": "class",
+            "name": "h1",
             "value": "h1"
           },
           {

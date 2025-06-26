@@ -1,102 +1,106 @@
 {
-  "definitions": [
-    {
-      "title": "Custom Block",
-      "id": "custom-block",
-      "plugins": {
-        "xwalk": {
-          "page": {
-            "resourceType": "core/franklin/components/block/v1/block",
-            "template": {
-              "name": "Custom Block",
-              "model": "custom-block"
-            }
+"definitions": [
+  {
+    "title": "Custom Block",
+    "id": "custom-block",
+    "plugins": {
+      "xwalk": {
+        "page": {
+          "resourceType": "core/franklin/components/block/v1/block",
+          "template": {
+            "name": "Custom Block",
+            "model": "custom-block"
           }
         }
       }
     }
-  ],
-  "models": [
-    {
-      "id": "custom-block",
-      "fields": [
-        {
-          "component": "text",
-          "label": "Title",
-          "name": "title",
-          "value": "",
-          "valueType": "string"
-        },
-        {
-          "component": "select",
-          "name": "titleType",
-          "value": "h1",
-          "label": "Title Type",
-          "valueType": "string",
-          "classes": "abc",
-          "options": [
-            {
-              "name": "class",
-              "value": "h1"
-            },
-            {
-              "name": "h2",
-              "value": "h2"
-            },
-            {
-              "name": "h3",
-              "value": "h3"
-            },
-            {
-              "name": "h4",
-              "value": "h4"
-            },
-            {
-              "name": "h5",
-              "value": "h5"
-            },
-            {
-              "name": "h6",
-              "value": "h6"
-            }
-          ]
-        },
-        {
-          "component": "richtext",
-          "label": "Description",
-          "name": "description",
-          "value": "",
-          "valueType": "string"
-        },
-        {
-          "component": "aem-content",
-          "label": "Cta Link",
-          "name": "cta",
-          "value": "",
-          "valueType": "string"
-        },
-        {
-          "component": "text",
-          "label": "Cta Text",
-          "name": "ctaText",
-          "value": "",
-          "valueType": "string"
-        },
-        {
-          "component": "reference",
-          "name": "image",
-          "label": "Image",
-          "multi": false,
-          "valueType": "string"
-        },
-        {
-          "component": "text",
-          "name": "imageAlt",
-          "label": "Image Alt",
-          "valueType": "string"
-        }
-      ]
-    }
-  ],
-  "filters": []
+  }
+],
+"models": [
+  {
+    "id": "custom-block",
+    "fields": [
+      {
+        "component": "text",
+        "label": "Title",
+        "name": "title",
+        "value": "",
+        "valueType": "string",
+        "options": [
+  { "name": "Dark Theme", "value": "dark-theme" },
+  { "name": "Centered", "value": "centered" },
+  { "name": "Custom Border", "value": "custom-border" }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "titleType",
+        "value": "h1",
+        "label": "Title Type",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "h1",
+            "value": "h1"
+          },
+          {
+            "name": "h2",
+            "value": "h2"
+          },
+          {
+            "name": "h3",
+            "value": "h3"
+          },
+          {
+            "name": "h4",
+            "value": "h4"
+          },
+          {
+            "name": "h5",
+            "value": "h5"
+          },
+          {
+            "name": "h6",
+            "value": "h6"
+          }
+        ]
+      },
+      {
+        "component": "richtext",
+        "label": "Description",
+        "name": "description",
+        "value": "",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "label": "Cta Link",
+        "name": "cta",
+        "value": "",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "label": "Cta Text",
+        "name": "ctaText",
+        "value": "",
+        "valueType": "string"
+      },
+      {
+        "component": "reference",
+        "name": "image",
+        "label": "Image",
+        "multi": false,
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "imageAlt",
+        "label": "Image Alt",
+        "valueType": "string"
+      }
+    ]
+  }
+],
+"filters": []
 }
