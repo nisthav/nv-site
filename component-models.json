@@ -195,6 +195,7 @@
         "value": "h1",
         "label": "Title Type",
         "valueType": "string",
+        "multi": true,
         "options": [
           {
             "name": "h1",
