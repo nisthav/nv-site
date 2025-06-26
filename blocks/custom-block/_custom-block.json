@@ -25,13 +25,7 @@
           "label": "Title",
           "name": "title",
           "value": "",
-          "valueType": "string",
-           "options": [
-            {
-              "name": "class",
-              "value": "custom-class"
-            }
-          ]
+          "valueType": "string"
         },
         {
           "component": "select",
@@ -41,8 +35,8 @@
           "valueType": "string",
           "options": [
             {
-              "name": "h1",
-              "value": "h1"
+              "name": "class",
+              "value": "abc"
             },
             {
               "name": "h2",
