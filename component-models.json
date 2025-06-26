@@ -195,10 +195,11 @@
         "value": "h1",
         "label": "Title Type",
         "valueType": "string",
+        "classes": "abc",
         "options": [
           {
             "name": "class",
-            "value": "abc"
+            "value": "h1"
           },
           {
             "name": "h2",
