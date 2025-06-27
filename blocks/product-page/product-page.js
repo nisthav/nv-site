@@ -1,72 +1,86 @@
 /* eslint-disable linebreak-style */
 export default function decorate(block) {
-  async function applyEmbossEffect(imgEl, angle, strength) {
+  async function applyAnimeEffect(imgEl) {
     try {
-      const form = new FormData();
-      const originalBlob = await fetch(imgEl.src).then((r) => r.blob());
-      form.append('file', originalBlob);
-      form.append('angle', angle);         // '0', '45', '90', etc.
-      form.append('strength', String(strength)); // '0.5' to '5.0'
+      const imgBlob = await fetch(imgEl.src).then((r) => r.blob());
 
-      const res = await fetch('https://oyyi.xyz/api/image/emboss', {
+      // 1. Upload image to Replicate's storage
+      const uploadMetaRes = await fetch('https://api.replicate.com/v1/upload/data', {
         method: 'POST',
-        body: form,
+        headers: {
+          Authorization: 'Token YOUR_API_TOKEN', // 🔁 Replace with your Replicate token
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          filename: 'image.png',
+          content_type: imgBlob.type,
+        }),
       });
 
-      if (!res.ok) throw new Error(`Emboss API error: ${res.status}`);
+      const uploadMeta = await uploadMetaRes.json();
 
-      const blob = await res.blob();
-      const blobURL = URL.createObjectURL(blob);
-      imgEl.src = blobURL;
+      // 2. Upload actual image blob to the signed URL
+      await fetch(uploadMeta.upload_url, {
+        method: 'PUT',
+        headers: { 'Content-Type': imgBlob.type },
+        body: imgBlob,
+      });
+
+      // 3. Call AnimeGAN model with uploaded image URL
+      const predictionRes = await fetch('https://api.replicate.com/v1/predictions', {
+        method: 'POST',
+        headers: {
+          Authorization: 'Token YOUR_API_TOKEN', // 🔁 Replace with your token
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          version: '4c4f02a3c84c3e2440dc09893c06fb2ee3c9c391739ac00e0a3002bf8e3e5a19',
+          input: {
+            image: uploadMeta.upload_url,
+          },
+        }),
+      });
+
+      const prediction = await predictionRes.json();
+
+      // 4. Poll until image is ready
+      let result;
+      while (!result || result.status !== 'succeeded') {
+        await new Promise((r) => setTimeout(r, 2000));
+        const check = await fetch(prediction.urls.get, {
+          headers: { Authorization: 'r8_MZdW7TeVQDQP1X7RDvwas4fkKrdePaA3uByjU' },
+        });
+        result = await check.json();
+        if (result.status === 'failed') throw new Error('Generation failed');
+      }
+
+      // 5. Replace <img> with anime-style version
+      const animeUrl = result.output;
+      imgEl.src = animeUrl;
 
       const picture = imgEl.closest('picture');
       if (picture) {
         picture.querySelectorAll('source').forEach((srcTag) => {
           srcTag.removeAttribute('srcset');
-          srcTag.setAttribute('srcset', blobURL);
+          srcTag.setAttribute('srcset', animeUrl);
         });
       }
-
-      imgEl.onload = () => {
-        URL.revokeObjectURL(blobURL);
-      };
     } catch (e) {
-      console.error('Emboss effect error:', e);
-      alert('❌ Failed to apply emboss effect.');
+      console.error('Anime effect error:', e);
+      alert('❌ Failed to apply anime effect.');
     }
   }
 
+  // 🌟 Find the image inside the block
   const imgEl = block.querySelector('img');
   if (!imgEl) return;
 
+  // 🎛️ Create and style the button
   const controls = document.createElement('div');
   controls.style.marginTop = '10px';
 
-  // Angle dropdown
-  const selectAngle = document.createElement('select');
-  ['0', '45', '90', '135', '180', '225', '270', '315'].forEach((angle) => {
-    const option = document.createElement('option');
-    option.value = angle;
-    option.textContent = `Angle ${angle}°`;
-    selectAngle.appendChild(option);
-  });
-
-  // Strength dropdown
-  const selectStrength = document.createElement('select');
-  [
-    ['Soft (0.5)', 0.5],
-    ['Medium (2.5)', 2.5],
-    ['Strong (5.0)', 5.0],
-  ].forEach(([label, val]) => {
-    const option = document.createElement('option');
-    option.value = val;
-    option.textContent = label;
-    selectStrength.appendChild(option);
-  });
-
-  // Button
   const button = document.createElement('button');
-  button.textContent = '💠 Apply Emboss';
+  button.textContent = '🧚 Apply Ghibli Style';
   Object.assign(button.style, {
     padding: '8px 12px',
     marginLeft: '8px',
@@ -76,12 +90,14 @@ export default function decorate(block) {
     background: '#f0f0f0',
   });
 
-  controls.append(selectAngle, selectStrength, button);
+  // Attach button to DOM
+  controls.append(button);
   imgEl.closest('picture')?.parentNode.appendChild(controls);
 
+  // Bind click
   button.addEventListener('click', async () => {
-    button.textContent = '🛠️ Applying...';
-    await applyEmbossEffect(imgEl, selectAngle.value, parseFloat(selectStrength.value));
+    button.textContent = '🎨 Applying...';
+    await applyAnimeEffect(imgEl);
     button.textContent = '✅ Done';
   });
 }
