@@ -190,15 +190,15 @@
         "valueType": "string",
         "options": [
           {
-            "name": "Dark Theme",
+            "name": "class",
             "value": "dark-theme"
           },
           {
-            "name": "Centered",
+            "name": "class",
             "value": "centered"
           },
           {
-            "name": "Custom Border",
+            "name": "class",
             "value": "custom-border"
           }
         ]

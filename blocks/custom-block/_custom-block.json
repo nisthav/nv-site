@@ -27,9 +27,9 @@
         "value": "",
         "valueType": "string",
         "options": [
-  { "name": "Dark Theme", "value": "dark-theme" },
-  { "name": "Centered", "value": "centered" },
-  { "name": "Custom Border", "value": "custom-border" }
+  { "name": "class", "value": "dark-theme" },
+  { "name": "class", "value": "centered" },
+  { "name": "class", "value": "custom-border" }
         ]
       },
       {
