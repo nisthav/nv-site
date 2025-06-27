@@ -1,15 +1,15 @@
+/* eslint-disable linebreak-style */
 export default function decorate(block) {
-
   async function applyOilEffect(imgEl) {
     try {
       const form = new FormData();
-      form.append('file', await fetch(imgEl.src).then(r => r.blob());
+      form.append('file', await fetch(imgEl.src).then((r) => r.blob()));
       form.append('radius', '4');
       form.append('intensity_levels', '20');
 
       const res = await fetch('https://oyyi.xyz/api/image/oil-paint', {
         method: 'POST',
-        body: form
+        body: form,
       });
 
       if (!res.ok) throw new Error(`Status ${res.status}`);
@@ -30,7 +30,7 @@ export default function decorate(block) {
   Object.assign(button.style, {
     marginTop: '10px',
     padding: '8px 12px',
-    cursor: 'pointer'
+    cursor: 'pointer',
   });
   imgEl.closest('picture').parentNode.appendChild(button);
 
