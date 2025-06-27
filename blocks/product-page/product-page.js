@@ -2,11 +2,14 @@
 export default function decorate(block) {
   async function applySketchEffect(imgEl, style, intensity) {
     try {
+      // 1. Fetch and prepare image blob
       const form = new FormData();
-      form.append('file', await fetch(imgEl.src).then((r) => r.blob()));
+      const originalBlob = await fetch(imgEl.src).then((r) => r.blob());
+      form.append('file', originalBlob);
       form.append('style', style); // pencil | charcoal | pen
       form.append('intensity', String(intensity)); // 0.1–1.0
 
+      // 2. Call Oyyi sketch API
       const res = await fetch('https://oyyi.xyz/api/image/sketch', {
         method: 'POST',
         body: form,
@@ -14,33 +17,38 @@ export default function decorate(block) {
 
       if (!res.ok) throw new Error(`Status ${res.status}`);
 
+      // 3. Convert API response to blob URL
       const blob = await res.blob();
       const blobURL = URL.createObjectURL(blob);
-      const cacheBustURL = `${blobURL}?t=${Date.now()}`;
+      const finalURL = `${blobURL}?t=${Date.now()}`; // Cache-busting
 
-      // 🔁 Set new src on <img>
-      imgEl.src = cacheBustURL;
+      // 4. Replace <img> src
+      imgEl.src = finalURL;
 
-      // 🔁 Also update <source> tags in the same <picture>
+      // 5. Replace all <source> srcsets to avoid overrides
       const picture = imgEl.closest('picture');
       if (picture) {
         picture.querySelectorAll('source').forEach((srcTag) => {
           srcTag.removeAttribute('srcset');
-          srcTag.setAttribute('srcset', cacheBustURL);
+          srcTag.setAttribute('srcset', finalURL);
         });
       }
 
-      // 🧹 Optional: Cleanup after a few seconds
-      setTimeout(() => URL.revokeObjectURL(blobURL), 3000);
+      // 6. Wait for image to load before revoking blob
+      imgEl.onload = () => {
+        URL.revokeObjectURL(blobURL);
+      };
     } catch (e) {
       console.error('Sketch effect error:', e);
       alert('Failed to apply sketch effect.');
     }
   }
 
+  // Get image inside the block
   const imgEl = block.querySelector('img');
   if (!imgEl) return;
 
+  // Create controls container
   const controls = document.createElement('div');
   controls.style.marginTop = '10px';
 
@@ -78,6 +86,7 @@ export default function decorate(block) {
     background: '#f0f0f0',
   });
 
+  // Append controls and bind click
   controls.append(selectStyle, selectIntensity, button);
   imgEl.closest('picture')?.parentNode.appendChild(controls);
 
