@@ -34,9 +34,9 @@
       },
       {
         "component": "select",
-        "name": "titleType",
+        "name": "classes",
         "value": "h1",
-        "label": "Title Type",
+        "label": "class names",
         "valueType": "string",
         "options": [
           {
