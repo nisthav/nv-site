@@ -1,15 +1,15 @@
 {
 "definitions": [
   {
-    "title": "Custom Block",
-    "id": "custom-block",
+    "title": "Product Page",
+    "id": "product-page",
     "plugins": {
       "xwalk": {
         "page": {
           "resourceType": "core/franklin/components/block/v1/block",
           "template": {
-            "name": "Custom Block",
-            "model": "custom-block"
+            "name": "Product Page",
+            "model": "product-page"
           }
         }
       }
@@ -18,50 +18,41 @@
 ],
 "models": [
   {
-    "id": "custom-block",
+    "id": "product-page",
     "fields": [
       {
         "component": "text",
         "label": "Title",
         "name": "title",
         "value": "",
-        "valueType": "string",
-        "options": [
-  { "name": "class", "value": "dark-theme" },
-  { "name": "class", "value": "centered" },
-  { "name": "class", "value": "custom-border" }
-        ]
+        "valueType": "string"
       },
       {
         "component": "select",
         "name": "classes",
-        "value": "h1",
-        "label": "class names",
+        "value": "",
+        "label": "Category",
         "valueType": "string",
         "options": [
           {
-            "name": "h1",
-            "value": "h1"
+            "name": "Animals",
+            "value": "animals"
           },
           {
-            "name": "h2",
-            "value": "h2"
+            "name": "Flowers",
+            "value": "flowers"
           },
           {
-            "name": "h3",
-            "value": "h3"
+            "name": "Views",
+            "value": "views"
           },
           {
-            "name": "h4",
-            "value": "h4"
+            "name": "Food-items",
+            "value": "food-items"
           },
           {
-            "name": "h5",
-            "value": "h5"
-          },
-          {
-            "name": "h6",
-            "value": "h6"
+            "name": "Cricketers",
+            "value": "cricketers"
           }
         ]
       },
@@ -69,20 +60,6 @@
         "component": "richtext",
         "label": "Description",
         "name": "description",
-        "value": "",
-        "valueType": "string"
-      },
-      {
-        "component": "aem-content",
-        "label": "Cta Link",
-        "name": "cta",
-        "value": "",
-        "valueType": "string"
-      },
-      {
-        "component": "text",
-        "label": "Cta Text",
-        "name": "ctaText",
         "value": "",
         "valueType": "string"
       },

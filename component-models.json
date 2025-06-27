@@ -180,99 +180,6 @@
     ]
   },
   {
-    "id": "custom-block",
-    "fields": [
-      {
-        "component": "text",
-        "label": "Title",
-        "name": "title",
-        "value": "",
-        "valueType": "string",
-        "options": [
-          {
-            "name": "class",
-            "value": "dark-theme"
-          },
-          {
-            "name": "class",
-            "value": "centered"
-          },
-          {
-            "name": "class",
-            "value": "custom-border"
-          }
-        ]
-      },
-      {
-        "component": "select",
-        "name": "classes",
-        "value": "h1",
-        "label": "class names",
-        "valueType": "string",
-        "options": [
-          {
-            "name": "h1",
-            "value": "h1"
-          },
-          {
-            "name": "h2",
-            "value": "h2"
-          },
-          {
-            "name": "h3",
-            "value": "h3"
-          },
-          {
-            "name": "h4",
-            "value": "h4"
-          },
-          {
-            "name": "h5",
-            "value": "h5"
-          },
-          {
-            "name": "h6",
-            "value": "h6"
-          }
-        ]
-      },
-      {
-        "component": "richtext",
-        "label": "Description",
-        "name": "description",
-        "value": "",
-        "valueType": "string"
-      },
-      {
-        "component": "aem-content",
-        "label": "Cta Link",
-        "name": "cta",
-        "value": "",
-        "valueType": "string"
-      },
-      {
-        "component": "text",
-        "label": "Cta Text",
-        "name": "ctaText",
-        "value": "",
-        "valueType": "string"
-      },
-      {
-        "component": "reference",
-        "name": "image",
-        "label": "Image",
-        "multi": false,
-        "valueType": "string"
-      },
-      {
-        "component": "text",
-        "name": "imageAlt",
-        "label": "Image Alt",
-        "valueType": "string"
-      }
-    ]
-  },
-  {
     "id": "fragment",
     "fields": [
       {
@@ -304,6 +211,67 @@
         "name": "text",
         "value": "",
         "label": "Text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "product-page",
+    "fields": [
+      {
+        "component": "text",
+        "label": "Title",
+        "name": "title",
+        "value": "",
+        "valueType": "string"
+      },
+      {
+        "component": "select",
+        "name": "classes",
+        "value": "",
+        "label": "Category",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Animals",
+            "value": "animals"
+          },
+          {
+            "name": "Flowers",
+            "value": "flowers"
+          },
+          {
+            "name": "Views",
+            "value": "views"
+          },
+          {
+            "name": "Food-items",
+            "value": "food-items"
+          },
+          {
+            "name": "Cricketers",
+            "value": "cricketers"
+          }
+        ]
+      },
+      {
+        "component": "richtext",
+        "label": "Description",
+        "name": "description",
+        "value": "",
+        "valueType": "string"
+      },
+      {
+        "component": "reference",
+        "name": "image",
+        "label": "Image",
+        "multi": false,
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "imageAlt",
+        "label": "Image Alt",
         "valueType": "string"
       }
     ]
