@@ -1,18 +1,19 @@
 /* eslint-disable linebreak-style */
 export default function decorate(block) {
-  async function applyCartoonEffect(imgEl, intensity) {
+  async function applyEmbossEffect(imgEl, angle, strength) {
     try {
       const form = new FormData();
       const originalBlob = await fetch(imgEl.src).then((r) => r.blob());
       form.append('file', originalBlob);
-      form.append('intensity', String(intensity)); // typically between 0.1 and 1.0
+      form.append('angle', angle);         // '0', '45', '90', etc.
+      form.append('strength', String(strength)); // '0.5' to '5.0'
 
-      const res = await fetch('https://oyyi.xyz/api/image/cartoon', {
+      const res = await fetch('https://oyyi.xyz/api/image/emboss', {
         method: 'POST',
         body: form,
       });
 
-      if (!res.ok) throw new Error(`Cartoon API error: ${res.status}`);
+      if (!res.ok) throw new Error(`Emboss API error: ${res.status}`);
 
       const blob = await res.blob();
       const blobURL = URL.createObjectURL(blob);
@@ -30,8 +31,8 @@ export default function decorate(block) {
         URL.revokeObjectURL(blobURL);
       };
     } catch (e) {
-      console.error('Cartoon effect error:', e);
-      alert('❌ Failed to apply cartoon effect.');
+      console.error('Emboss effect error:', e);
+      alert('❌ Failed to apply emboss effect.');
     }
   }
 
@@ -41,21 +42,31 @@ export default function decorate(block) {
   const controls = document.createElement('div');
   controls.style.marginTop = '10px';
 
-  // Intensity selector
-  const selectIntensity = document.createElement('select');
+  // Angle dropdown
+  const selectAngle = document.createElement('select');
+  ['0', '45', '90', '135', '180', '225', '270', '315'].forEach((angle) => {
+    const option = document.createElement('option');
+    option.value = angle;
+    option.textContent = `Angle ${angle}°`;
+    selectAngle.appendChild(option);
+  });
+
+  // Strength dropdown
+  const selectStrength = document.createElement('select');
   [
-    ['Light (0.3)', 0.3],
-    ['Medium (0.6)', 0.6],
-    ['Strong (0.9)', 0.9],
+    ['Soft (0.5)', 0.5],
+    ['Medium (2.5)', 2.5],
+    ['Strong (5.0)', 5.0],
   ].forEach(([label, val]) => {
     const option = document.createElement('option');
     option.value = val;
     option.textContent = label;
-    selectIntensity.appendChild(option);
+    selectStrength.appendChild(option);
   });
 
+  // Button
   const button = document.createElement('button');
-  button.textContent = '🎭 Apply Cartoon';
+  button.textContent = '💠 Apply Emboss';
   Object.assign(button.style, {
     padding: '8px 12px',
     marginLeft: '8px',
@@ -65,12 +76,12 @@ export default function decorate(block) {
     background: '#f0f0f0',
   });
 
-  controls.append(selectIntensity, button);
+  controls.append(selectAngle, selectStrength, button);
   imgEl.closest('picture')?.parentNode.appendChild(controls);
 
   button.addEventListener('click', async () => {
-    button.textContent = '🎨 Applying...';
-    await applyCartoonEffect(imgEl, parseFloat(selectIntensity.value));
+    button.textContent = '🛠️ Applying...';
+    await applyEmbossEffect(imgEl, selectAngle.value, parseFloat(selectStrength.value));
     button.textContent = '✅ Done';
   });
 }
