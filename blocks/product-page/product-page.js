@@ -1,86 +1,61 @@
 /* eslint-disable linebreak-style */
 export default function decorate(block) {
-  async function applyAnimeEffect(imgEl) {
+  async function applyCartoonEffect(imgEl, intensity) {
     try {
-      const imgBlob = await fetch(imgEl.src).then((r) => r.blob());
+      const form = new FormData();
+      const originalBlob = await fetch(imgEl.src).then((r) => r.blob());
+      form.append('file', originalBlob);
+      form.append('intensity', String(intensity)); // typically between 0.1 and 1.0
 
-      // 1. Upload image to Replicate's storage
-      const uploadMetaRes = await fetch('https://api.replicate.com/v1/upload/data', {
+      const res = await fetch('https://oyyi.xyz/api/image/cartoon', {
         method: 'POST',
-        headers: {
-          Authorization: 'Token YOUR_API_TOKEN', // 🔁 Replace with your Replicate token
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          filename: 'image.png',
-          content_type: imgBlob.type,
-        }),
+        body: form,
       });
 
-      const uploadMeta = await uploadMetaRes.json();
+      if (!res.ok) throw new Error(`Cartoon API error: ${res.status}`);
 
-      // 2. Upload actual image blob to the signed URL
-      await fetch(uploadMeta.upload_url, {
-        method: 'PUT',
-        headers: { 'Content-Type': imgBlob.type },
-        body: imgBlob,
-      });
-
-      // 3. Call AnimeGAN model with uploaded image URL
-      const predictionRes = await fetch('https://api.replicate.com/v1/predictions', {
-        method: 'POST',
-        headers: {
-          Authorization: 'Token YOUR_API_TOKEN', // 🔁 Replace with your token
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          version: '4c4f02a3c84c3e2440dc09893c06fb2ee3c9c391739ac00e0a3002bf8e3e5a19',
-          input: {
-            image: uploadMeta.upload_url,
-          },
-        }),
-      });
-
-      const prediction = await predictionRes.json();
-
-      // 4. Poll until image is ready
-      let result;
-      while (!result || result.status !== 'succeeded') {
-        await new Promise((r) => setTimeout(r, 2000));
-        const check = await fetch(prediction.urls.get, {
-          headers: { Authorization: 'r8_MZdW7TeVQDQP1X7RDvwas4fkKrdePaA3uByjU' },
-        });
-        result = await check.json();
-        if (result.status === 'failed') throw new Error('Generation failed');
-      }
-
-      // 5. Replace <img> with anime-style version
-      const animeUrl = result.output;
-      imgEl.src = animeUrl;
+      const blob = await res.blob();
+      const blobURL = URL.createObjectURL(blob);
+      imgEl.src = blobURL;
 
       const picture = imgEl.closest('picture');
       if (picture) {
         picture.querySelectorAll('source').forEach((srcTag) => {
           srcTag.removeAttribute('srcset');
-          srcTag.setAttribute('srcset', animeUrl);
+          srcTag.setAttribute('srcset', blobURL);
         });
       }
+
+      imgEl.onload = () => {
+        URL.revokeObjectURL(blobURL);
+      };
     } catch (e) {
-      console.error('Anime effect error:', e);
-      alert('❌ Failed to apply anime effect.');
+      console.error('Cartoon effect error:', e);
+      alert('❌ Failed to apply cartoon effect.');
     }
   }
 
-  // 🌟 Find the image inside the block
   const imgEl = block.querySelector('img');
   if (!imgEl) return;
 
-  // 🎛️ Create and style the button
   const controls = document.createElement('div');
   controls.style.marginTop = '10px';
 
+  // Intensity selector
+  const selectIntensity = document.createElement('select');
+  [
+    ['Light (0.3)', 0.3],
+    ['Medium (0.6)', 0.6],
+    ['Strong (0.9)', 0.9],
+  ].forEach(([label, val]) => {
+    const option = document.createElement('option');
+    option.value = val;
+    option.textContent = label;
+    selectIntensity.appendChild(option);
+  });
+
   const button = document.createElement('button');
-  button.textContent = '🧚 Apply Ghibli Style';
+  button.textContent = '🎭 Apply Cartoon';
   Object.assign(button.style, {
     padding: '8px 12px',
     marginLeft: '8px',
@@ -90,14 +65,12 @@ export default function decorate(block) {
     background: '#f0f0f0',
   });
 
-  // Attach button to DOM
-  controls.append(button);
+  controls.append(selectIntensity, button);
   imgEl.closest('picture')?.parentNode.appendChild(controls);
 
-  // Bind click
   button.addEventListener('click', async () => {
     button.textContent = '🎨 Applying...';
-    await applyAnimeEffect(imgEl);
+    await applyCartoonEffect(imgEl, parseFloat(selectIntensity.value));
     button.textContent = '✅ Done';
   });
 }
