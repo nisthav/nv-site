@@ -273,6 +273,20 @@
         "name": "imageAlt",
         "label": "Image Alt",
         "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "label": "Cta Link",
+        "name": "cta",
+        "value": "",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "label": "Cta Text",
+        "name": "ctaText",
+        "value": "",
+        "valueType": "string"
       }
     ]
   }
