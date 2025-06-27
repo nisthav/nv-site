@@ -1,79 +1,86 @@
 /* eslint-disable linebreak-style */
 export default function decorate(block) {
-  async function applyAnimationEffect(imgEl, style, intensity) {
+  async function applyAnimeEffect(imgEl) {
     try {
-      // 1. Create FormData with original image blob
-      const form = new FormData();
-      const originalBlob = await fetch(imgEl.src).then((r) => r.blob());
-      form.append('file', originalBlob);
-      form.append('style', style); // 'pencil' | 'charcoal' | 'pen' or other animation styles
-      form.append('intensity', String(intensity)); // 0.1–1.0
+      const imgBlob = await fetch(imgEl.src).then((r) => r.blob());
 
-      // 2. Send to animation API
-      const res = await fetch('https://oyyi.xyz/api/image/animate', {
+      // 1. Upload image to Replicate's storage
+      const uploadMetaRes = await fetch('https://api.replicate.com/v1/upload/data', {
         method: 'POST',
-        body: form,
+        headers: {
+          Authorization: 'Token YOUR_API_TOKEN', // 🔁 Replace with your Replicate token
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          filename: 'image.png',
+          content_type: imgBlob.type,
+        }),
       });
 
-      if (!res.ok) throw new Error(`Animation API error: ${res.status}`);
+      const uploadMeta = await uploadMetaRes.json();
 
-      // 3. Read and apply blob result
-      const blob = await res.blob();
-      const blobURL = URL.createObjectURL(blob);
+      // 2. Upload actual image blob to the signed URL
+      await fetch(uploadMeta.upload_url, {
+        method: 'PUT',
+        headers: { 'Content-Type': imgBlob.type },
+        body: imgBlob,
+      });
 
-      // 4. Replace <img> with <video>
-      const videoEl = document.createElement('video');
-      videoEl.src = blobURL;
-      videoEl.autoplay = true;
-      videoEl.loop = true;
-      videoEl.muted = true;
-      videoEl.style.maxWidth = '100%';
+      // 3. Call AnimeGAN model with uploaded image URL
+      const predictionRes = await fetch('https://api.replicate.com/v1/predictions', {
+        method: 'POST',
+        headers: {
+          Authorization: 'Token YOUR_API_TOKEN', // 🔁 Replace with your token
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          version: '4c4f02a3c84c3e2440dc09893c06fb2ee3c9c391739ac00e0a3002bf8e3e5a19',
+          input: {
+            image: uploadMeta.upload_url,
+          },
+        }),
+      });
+
+      const prediction = await predictionRes.json();
+
+      // 4. Poll until image is ready
+      let result;
+      while (!result || result.status !== 'succeeded') {
+        await new Promise((r) => setTimeout(r, 2000));
+        const check = await fetch(prediction.urls.get, {
+          headers: { Authorization: 'r8_MZdW7TeVQDQP1X7RDvwas4fkKrdePaA3uByjU' },
+        });
+        result = await check.json();
+        if (result.status === 'failed') throw new Error('Generation failed');
+      }
+
+      // 5. Replace <img> with anime-style version
+      const animeUrl = result.output;
+      imgEl.src = animeUrl;
 
       const picture = imgEl.closest('picture');
       if (picture) {
-        picture.replaceWith(videoEl);
-      } else {
-        imgEl.replaceWith(videoEl);
+        picture.querySelectorAll('source').forEach((srcTag) => {
+          srcTag.removeAttribute('srcset');
+          srcTag.setAttribute('srcset', animeUrl);
+        });
       }
-
-      videoEl.onloadeddata = () => {
-        URL.revokeObjectURL(blobURL);
-      };
     } catch (e) {
-      console.error('Animation effect error:', e);
-      alert('❌ Failed to apply animation effect.');
+      console.error('Anime effect error:', e);
+      alert('❌ Failed to apply anime effect.');
     }
   }
 
+  // 🌟 Find the image inside the block
   const imgEl = block.querySelector('img');
   if (!imgEl) return;
 
-  // 🎛️ Controls
+  // 🎛️ Create and style the button
   const controls = document.createElement('div');
   controls.style.marginTop = '10px';
 
-  const selectStyle = document.createElement('select');
-  ['dance', 'cartoon', 'glitch'].forEach((s) => {
-    const option = document.createElement('option');
-    option.value = s;
-    option.textContent = s[0].toUpperCase() + s.slice(1);
-    selectStyle.appendChild(option);
-  });
-
-  const selectIntensity = document.createElement('select');
-  [
-    ['Subtle (0.3)', 0.3],
-    ['Medium (0.6)', 0.6],
-    ['Intense (0.9)', 0.9],
-  ].forEach(([label, val]) => {
-    const option = document.createElement('option');
-    option.value = val;
-    option.textContent = label;
-    selectIntensity.appendChild(option);
-  });
-
   const button = document.createElement('button');
-  button.textContent = '🎞️ Animate Image';
+  button.textContent = '🧚 Apply Ghibli Style';
   Object.assign(button.style, {
     padding: '8px 12px',
     marginLeft: '8px',
@@ -83,16 +90,14 @@ export default function decorate(block) {
     background: '#f0f0f0',
   });
 
-  controls.append(selectStyle, selectIntensity, button);
+  // Attach button to DOM
+  controls.append(button);
   imgEl.closest('picture')?.parentNode.appendChild(controls);
 
+  // Bind click
   button.addEventListener('click', async () => {
-    button.textContent = '🔄 Animating...';
-    await applyAnimationEffect(
-      imgEl,
-      selectStyle.value,
-      parseFloat(selectIntensity.value),
-    );
+    button.textContent = '🎨 Applying...';
+    await applyAnimeEffect(imgEl);
     button.textContent = '✅ Done';
   });
 }
