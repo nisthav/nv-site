@@ -306,6 +306,27 @@
         "name": "recent search text",
         "value": "",
         "valueType": "string"
+      },
+      {
+        "component": "text",
+        "label": "Search Icon",
+        "name": "search icon",
+        "value": "",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "label": "Close",
+        "name": "close",
+        "value": "",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "label": "Close Icon",
+        "name": "close icon",
+        "value": "",
+        "valueType": "string"
       }
     ]
   }
