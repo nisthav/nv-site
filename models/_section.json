@@ -51,7 +51,8 @@
         "cards",
         "columns",
         "fragment",
-        "product-page"
+        "product-page",
+        "search"
       ]
     }
   ]
