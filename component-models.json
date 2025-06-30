@@ -289,5 +289,24 @@
         "valueType": "string"
       }
     ]
+  },
+  {
+    "id": "search",
+    "fields": [
+      {
+        "component": "text",
+        "label": "Search Text",
+        "name": "search text",
+        "value": "",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "label": "Recent Search Text",
+        "name": "recent search text",
+        "value": "",
+        "valueType": "string"
+      }
+    ]
   }
 ]
