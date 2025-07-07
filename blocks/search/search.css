@@ -1,0 +1,93 @@
+/* Original input fixed at top */
+.search {
+ box-sizing: border-box;
+}
+
+.search-top-fixed {
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 12px 16px;
+  background: white;
+  z-index: 999;
+}
+
+/* Style of input */
+.search-input {
+  width: 100%;
+  /* max-width: 600px; */
+  height: 36px;
+  padding: 8px 12px 8px 36px;
+  border: none;
+  border-radius: 24px;
+  background-color: #eee;
+  font-size: 14px;
+  outline: none;
+  background-repeat: no-repeat;
+  background-position: 12px center;
+  background-size: 16px 16px;
+  box-sizing: border-box;
+}
+
+/* Drawer when input is clicked */
+.search-drawer {
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  padding: 16px;
+  z-index: 1000;
+  animation: slideDown 0.3s ease-out;
+     
+}
+
+/* Drawer animation */
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Drawer input styling */
+.drawer-input-wrapper {
+  position: relative;
+  /* max-width: 600px; */
+  margin: 0 auto;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 36px 8px 36px;
+  font-size: 16px;
+  border: none;
+  border-radius: 24px;
+  background-color: #eee;
+  background-repeat: no-repeat;
+  background-position: 12px center;
+  background-size: 16px 16px;
+  outline: none;
+  box-sizing: border-box;
+  
+}
+
+.drawer-close {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: #888;
+  cursor: pointer;
+}
+
+.drawer-input-wrapper .search-input{
+     box-shadow: rgba(0, 132, 255, 0.5) 0px 0px 0px 4px;
+}
